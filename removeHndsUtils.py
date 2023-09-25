@@ -10,7 +10,7 @@ class Method(Enum):
     REGION_BASED = auto()
 
 
-class SkinDetector():
+class SkinDetector:
     def __init__(self, image_path: str) -> None:
         self.image = cv2.imread(image_path)
         self.image_mask = None
@@ -21,14 +21,6 @@ class SkinDetector():
         if (method == Method.REGION_BASED):
             self.__color_segmentation()
             self.__region_based_segmentation()
-
-    def get_resulting_images(self) -> tuple:
-        """Returns the processed images
-            [0] = The original image
-            [1] = The resulting image mask containing the skin
-            [2] = The result image after a bitwise_and of [1] and [0]"""
-
-        return self.image, self.image_mask, self.skin
 
     def __color_segmentation(self) -> None:
         '''Apply a threshold to an HSV and YCbCr images, the used values were based on current research papers along with some empirical tests and visual evaluation'''

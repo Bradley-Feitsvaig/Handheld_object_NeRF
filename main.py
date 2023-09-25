@@ -1,5 +1,4 @@
 import os
-
 import cv2
 
 from removeHndsUtils import remove_hands_from_image
@@ -12,23 +11,15 @@ def split_video_to_images(video_path, output_dir):
 def preprocess_data(input_dir, output_dir):
     # Create output directory if it doesn't exist
     os.makedirs(output_dir, exist_ok=True)
-
     # List all files in the input directory
     file_list = os.listdir(input_dir)
-
-    # Loop over each file
+    # Loop over each image
     for file_name in file_list:
-        # Check if the file is a PNG file
         if file_name.endswith('.png'):
-            # Construct the full path of the input file
             input_path = os.path.join(input_dir, file_name)
-
+            # Remove hands from image
             processed_image = remove_hands_from_image(input_path)
-
-            # Construct the full path of the output file
             output_path = os.path.join(output_dir, file_name)
-
-            # Save the modified image
             cv2.imwrite(output_path, processed_image)
 
 
