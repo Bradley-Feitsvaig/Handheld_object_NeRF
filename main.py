@@ -1,6 +1,6 @@
 import os
 import cv2
-
+import shutil
 from removeHndsUtils import remove_hands_from_image
 
 
@@ -8,7 +8,7 @@ def split_video_to_images(video_path, output_dir):
     os.system(f'ns-process-data video --data {video_path} --output-dir {output_dir} --skip-colmap')
 
 
-def preprocess_data(input_dir, output_dir):
+def preprocess_data(input_dir, output_dir, remove_bg):
     # Create output directory if it doesn't exist
     os.makedirs(output_dir, exist_ok=True)
     # List all files in the input directory
@@ -18,7 +18,7 @@ def preprocess_data(input_dir, output_dir):
         if file_name.endswith('.png'):
             input_path = os.path.join(input_dir, file_name)
             # Remove hands from image
-            processed_image = remove_hands_from_image(input_path)
+            processed_image = remove_hands_from_image(input_path, remove_bg)
             output_path = os.path.join(output_dir, file_name)
             cv2.imwrite(output_path, processed_image)
 
@@ -32,10 +32,18 @@ def run_nerf(data_path):
     os.system(f'ns-train nerfacto --viewer.websocket-port 7007 nerfstudio-data --data {data_path} --downscale-factor 4')
 
 
+def remove_data(dir, processed_images_dir, base_dir):
+    if os.path.exists(processed_images_dir):
+        shutil.move(processed_images_dir, base_dir)
+    if os.path.exists(dir):
+        shutil.rmtree(dir)
+
+
 if __name__ == '__main__':
-    scene = 'matro'
+    scene = 'rubic'
     split_video_to_images(video_path=f"data\{scene}\{scene}.mp4", output_dir=f"data\{scene}")
     preprocess_data(input_dir=f'data/{scene}/images',
-                    output_dir=f'data/{scene}/processed_images')
+                    output_dir=f'data/{scene}/processed_images', remove_bg=True)
+    remove_data(f"data/{scene}/splitted_data", f"data/{scene}/splitted_data/processed_images", f"data/{scene}")
     run_colmap_on_processed_images(images_path=f'data/{scene}/processed_images', output_dir=f"data\{scene}")
     run_nerf(f"data\{scene}")

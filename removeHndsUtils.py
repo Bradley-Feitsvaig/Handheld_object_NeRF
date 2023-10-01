@@ -62,11 +62,12 @@ class SkinDetector:
         self.skin = cv2.bitwise_and(self.image, self.image, mask=self.image_mask)
 
 
-def remove_hands_from_image(image_path):
+def remove_hands_from_image(image_path, remove_Bg):
     detector = SkinDetector(image_path)
     detector.find_skin()
     segmentor = SelfiSegmentation()
     image = detector.image - detector.skin
-    black = (0, 0, 0)
-    imgNoBg = segmentor.removeBG(image, black)
-    return imgNoBg
+    if remove_Bg:
+        black = (0, 0, 0)
+        image = segmentor.removeBG(image, black)
+    return image
