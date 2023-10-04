@@ -7,3 +7,4 @@ torchvision==0.15.2+cu118 --extra-index-url https://download.pytorch.org/whl/cu1
 conda install -c "nvidia/label/cuda-11.8.0" cuda-toolkit
 pip install ninja git+https://github.com/NVlabs/tiny-cuda-nn/#subdirectory=bindings/torch
 git+https://github.com/nerfstudio-project/nerfstudio.git
+conda install -c conda-forge ceres-solver
